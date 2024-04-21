@@ -69,40 +69,36 @@ module.exports = {
     // Update User
     async updateGroup(req, res) {
         try {
-            const {name, members, isActive} = req.body;
+            const {name, members, isActive, groupId} = req.body;
 
-            if(!password && !email && !name) {
-                return res.status(400).json({message: "Invalid Request"});
+            let group = await Groups.findById(groupId);
+
+            if(!group) {
+                res.status(404).json({message: "Group not Found!"})
             }
 
-            let user = await  Users.findById(userId);
-            if(!user) {
-                return res.status(400).json({message: "User not found!"});
-            }
-
-            if(email) {
-    		    const checkEmail = await Users.findOne({email});
-                if(checkEmail) {
-                    return res.status(400).json({message: "Email Already Exists!"});
+            if(members[0]) {
+                for(let userId of members) {
+                    let user = await Users.findById(userId);
+                    if(!user) {
+                        return res.status(400).json({ message: 'User not found' });
+                    }
                 }
 
-                user.email = email;
+                group.members = members;
             }
 
-            if (password) {
-                const salt = await bcrypt.genSalt(10);
-    			let newPassword = await bcrypt.hash(password, salt);
-                
-                user.password = newPassword;
+            if("isActive" in req.body) {
+                group.isActive = isActive;
             }
 
             if(name) {
-                user.name = name;
-            }
+                group.name = name;
+            }     
             
-            await user.save();
+            await group.save();
 
-            return res.status(200).json({message: "Success"});
+            return res.status(200).json({data: group, message: "Success"});
         } catch (error) {
 			console.error(error.message);
             res.status(500).json({ message: 'Server Error' });

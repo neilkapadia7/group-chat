@@ -53,6 +53,7 @@ router.post(
 router.post('/updateGroup',
 	auth,
     [
+		check('groupId', 'Please Include a Valid UserId').isString(),
 		check('name', 'Please Include a Valid UserId').isString().optional(),
 		check('members', 'Please Include a Valid Name').isString().optional(),
 		check('isActive', 'Please Include a Valid Email Id').isBoolean().optional()
