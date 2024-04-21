@@ -17,6 +17,7 @@ const UserSchema = mongoose.Schema({
 		type: Boolean,
 		default: false
 	},
+    token: {type: String}, // Storing token in DB to have one user login at a time (if needed)
 	isActive: {type: Boolean, default: true},
 }, 
 {

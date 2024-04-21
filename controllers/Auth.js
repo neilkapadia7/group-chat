@@ -81,15 +81,41 @@ module.exports = {
 		}
     },
 
-    // Post -  api/auth/passwordChange
-    // Update User Password
-    async updatePassword(req, res, user) {
+    // Post -  api/auth/updateUser
+    // Update User
+    async updateUser(req, res, user) {
         try {
-            const {password} = req.body;
-            const salt = await bcrypt.genSalt(10);
+            const {password, email, name, userId} = req.body;
 
-			let newPassword = await bcrypt.hash(password, salt);
-            user.password = newPassword;
+            if(!password && !email && !name) {
+                return res.status(400).json({message: "Invalid Request"});
+            }
+
+            let user = await  Users.findById(userId);
+            if(!user) {
+                return res.status(400).json({message: "User not found!"});
+            }
+
+            if(email) {
+    		    const checkEmail = await Users.findOne({email});
+                if(checkEmail) {
+                    return res.status(400).json({message: "Email Already Exists!"});
+                }
+
+                user.email = email;
+            }
+
+            if (password) {
+                const salt = await bcrypt.genSalt(10);
+    			let newPassword = await bcrypt.hash(password, salt);
+                
+                user.password = newPassword;
+            }
+
+            if(name) {
+                user.name = name;
+            }
+            
             await user.save();
 
             return res.status(200).json({message: "Success"});
@@ -97,5 +123,20 @@ module.exports = {
 			console.error(error.message);
             res.status(500).json({ message: 'Server Error' });
         }
-    }
+    },
+
+    // GET api/auth/getAllUsers
+    async getAllUsers(req, res) {
+        try {
+            let user = await Users.find({isActive: true}).select("-password");
+            if(!user[0]) {
+                return res.status(400).json({message: "No Users Found"});
+            }
+
+            return res.status(200).json({data: user, message: "Success"});
+        } catch (error) {
+            console.error(err.message);
+			res.status(500).json({ message: 'Server Error' }); 
+        }
+    },
 };

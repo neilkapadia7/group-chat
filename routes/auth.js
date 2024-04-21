@@ -64,25 +64,26 @@ router.post(
 	}
 );
 
-// @route  POST    api/auth/passwordChange
-// @desc   User Password Update
+// @route  POST    api/auth/updateUser
+// @desc   User Update
 // @access  Public
 router.post(
-	'/passwordChange',
+	'/updateUser',
 	[
-		check('email', 'Please Include a Valid Email Id').isEmail(),
-		check('password', 'Please enter your password').not().isEmpty(),
+		check('userId', 'Please Include a Valid UserId').isString(),
+		check('name', 'Please Include a Valid Name').isString().optional(),
+		check('email', 'Please Include a Valid Email Id').isEmail().optional(),
+		check('password', 'Please enter your password').isString().optional(),
 	],
 	auth,
 	async (req, res) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			return res.status(400).json({ errors: errors.array() });
-		}
+        }
 
-		const checkUser = await User.findOne({email});
-		if(req.isAdminUser || (checkUser && checkUser._id == req.userId)) {
-			AuthController.updatePassword(req, res, checkUser);
+		if(req.isAdminUser) {
+			return AuthController.updateUser(req, res);
 		}
 		else {
 			return res.status(400).json({ message: "Invalid Access" });
@@ -100,7 +101,7 @@ router.get('/getAllUsers',
 			return res.status(401).json({message: "Invalid Access"})
 		}
 
-		AdminController.getAllUsers(req, res);
+		AuthController.getAllUsers(req, res);
 	}
 );
 
