@@ -3,8 +3,8 @@ const { check, validationResult } = require('express-validator');
 
 const router = express.Router();
 
-// router.use('/admin', require('@routes/admin')); // Renewed
-router.use('/auth', require('@routes/auth')); // Done
+router.use('/group', require('@routes/group')); 
+router.use('/auth', require('@routes/auth')); 
 
 module.exports = router;
 
