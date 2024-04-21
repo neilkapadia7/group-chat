@@ -27,6 +27,8 @@ module.exports = {
 			let generateToken = await createUserToken(user.id);
 
             if(!generateToken.isError) {
+                user.token = generateToken.token;
+                await user.save();
                 return res.status(200).json({token: generateToken.token});
             } else {
                 console.log(generateToken.error)
