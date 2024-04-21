@@ -38,9 +38,19 @@ module.exports = {
         }
 
 		try {
-            let query = {isActive: true};
+            let query = {
+                isActive: true, 
+                $or: [
+                    {
+                        members: {$in: [req.userId]}
+                    },
+                    {
+                        createdBy: req.userId
+                    }
+                ]
+            };
 
-            if(groupId) {
+            if(groupIds[0]) {
                 query = {_id: {'$in': groupIds}}
             }
 
