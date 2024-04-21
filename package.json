@@ -6,6 +6,16 @@
   "scripts": {
     "start": "node server.js"
   },
+
+  "_moduleAliases": {
+		"@root": ".",
+		"@controllers": "./controllers",
+		"@models": "./models",
+		"@middleware": "./middleware",
+		"@service": "./service",
+		"@routes": "./routes",
+		"@constants": "./constants"
+	},
   "keywords": [],
   "author": "",
   "license": "ISC",
