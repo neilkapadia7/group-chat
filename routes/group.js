@@ -33,9 +33,9 @@ router.post(
 	'/getAllGroups',
 	auth,
 	[
-		check('groupId', 'Please Include a Valid UserId').isString().optional(),
+		check('groupIds', 'Please Include a Valid GroupIds').isArray().optional(),
 		check('search', 'Please Include a Valid Name').isString().optional(),
-		check('pageNo', 'Please Include a Valid Email Id').isNumeric().optional()
+		check('pageNo', 'Please Include a Page No').isNumeric().optional()
 	],
 	async (req, res) => {
 		const errors = validationResult(req);
