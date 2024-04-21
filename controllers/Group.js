@@ -44,6 +44,13 @@ module.exports = {
                 query = {_id: {'$in': groupIds}}
             }
 
+            if(search) {
+                query = {
+                    ...query,
+                    name: { $regex: new RegExp(search, 'i') }
+                }
+            }
+
             let group = await Groups.find(query)
                 .skip(25 * pageNo - 25)
                 .limit(25)
