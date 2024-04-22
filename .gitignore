@@ -3,3 +3,4 @@
 /dist
 tsconfig.json
 index.ts
+socket.js
